@@ -86,6 +86,11 @@
                             <i class="bi bi-tags me-1"></i>Ropa
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inventario_lista' %}">
+                            <i class="bi bi-boxes me-1"></i>Inventario
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
@@ -93,6 +98,7 @@
                         </a>
                         <ul class="dropdown-menu shadow-sm">
                             <li><a class="dropdown-item" href="{% url 'ropa' %}"><i class="bi bi-tags me-2 text-primary"></i>Ropa</a></li>
+                            <li><a class="dropdown-item" href="{% url 'inventario_lista' %}"><i class="bi bi-boxes me-2 text-info"></i>Inventario</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-layers me-2 text-secondary"></i>Modelos</a></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-truck me-2 text-secondary"></i>Proveedores</a></li>
@@ -116,6 +122,14 @@
 
     <!-- Contenido Principal -->
     <main class="container my-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
