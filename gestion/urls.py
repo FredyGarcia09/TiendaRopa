@@ -21,6 +21,8 @@ urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('home/', views.HomeView.as_view(), name='home_alt'),
     path('ropa/', views.RopaListView.as_view(), name='ropa'),
+    path('clientes/', views.ClienteListView.as_view(), name='clientes'),
+    path('clientes/<int:pk>/',views.HistorialVentaClienteListView.as_view(),name="historialCliente"),
     path('inventario/', views.InventarioListView.as_view(), name='inventario_lista'),
     path('inventario/<int:ropa_id>/', views.actualizar_inventario_view, name='actualizar_inventario'),
 ]
