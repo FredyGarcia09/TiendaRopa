@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import generic
 from django.db.models import Sum
-from .models import Ropa, Modelo, Cliente
+from .models import Ropa, Modelo, Cliente, Empleado, Proveedor
 
 
 class HomeView(generic.TemplateView):
@@ -55,6 +55,26 @@ class HistorialVentaClienteListView(generic.DetailView):
         cliente.listaVentas = cliente.venta_set.all()
 
         return context
+
+class EmpleadoListView(generic.ListView):
+    """Vista de catálogo de empleados"""
+    model=Empleado
+    template_name="empleados.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        for empleado in context['empleado_list']:
+            resultado=empleado.venta_set.aggregate(totalVentas=Sum('total'))
+            empleado.ventasTotal=resultado['totalVentas'] or 0
+
+        return context
+
+
+class ProveedorListView(generic.ListView):
+    """Vista de catálogo de proveedores"""
+    model=Proveedor
+    template_name="proveedores.html"
 
 class InventarioListView(generic.ListView):
     """Vista general para consultar productos con su inventario total disponible."""
