@@ -1,11 +1,24 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import generic
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from .models import Ropa, Modelo, Cliente, Empleado, Proveedor
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
+class MiLoginView(LoginView):
+    template_name = 'registration/login.html'
 
-class HomeView(generic.TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home')
+
+        return super().dispatch(request, *args, **kwargs)
+
+class HomeView(LoginRequiredMixin,generic.TemplateView):
     """Vista del menú inicial del sistema."""
     template_name = 'home.html'
 

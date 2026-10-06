@@ -1,5 +1,6 @@
 {% extends "pagina_maestra.html" %}
 
+{% load permisos %}
 {% block title %}Inicio - Menú Principal{% endblock %}
 
 {% block content %}
@@ -13,6 +14,7 @@
 <!-- Menú de Módulos del Sistema -->
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
 
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Ropa -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -34,7 +36,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if user|pertenece_grupo:"Cajero" %}
     <!-- Módulo Ventas -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -56,7 +60,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if user|pertenece_grupo:"Almacenista" %}
     <!-- Módulo Inventario -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -78,7 +84,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Clientes -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -100,7 +108,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Proveedores -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -122,7 +132,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Empleados -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -144,6 +156,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
 </div>
 {% endblock %}

@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tienda',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': 'whythough210',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -130,3 +130,8 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# Configuración de autenticación
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
