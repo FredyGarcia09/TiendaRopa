@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.views import generic
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db import transaction
 from .models import Ropa, Modelo, Cliente, Empleado, Proveedor, Venta, DetalleVenta
@@ -18,12 +19,12 @@ class MiLoginView(LoginView):
 
         return super().dispatch(request, *args, **kwargs)
 
-class HomeView(LoginRequiredMixin,generic.TemplateView):
+class HomeView(LoginRequiredMixin, generic.TemplateView):
     """Vista del menú inicial del sistema."""
     template_name = 'home.html'
 
 
-class RopaListView(generic.ListView):
+class RopaListView(LoginRequiredMixin, generic.ListView):
     """Vista de catálogo de ropa con DataTables y exportación a Excel."""
     model = Ropa
     template_name = 'ropa.html'
@@ -38,7 +39,7 @@ class RopaListView(generic.ListView):
         )
 
 
-class ClienteListView(generic.ListView):
+class ClienteListView(LoginRequiredMixin, generic.ListView):
     """Vista de cátalogo de clientes con DataTables"""
     model=Cliente
     template_name="clientes.html"
@@ -53,7 +54,7 @@ class ClienteListView(generic.ListView):
 
         return context
 
-class HistorialVentaClienteListView(generic.DetailView):
+class HistorialVentaClienteListView(LoginRequiredMixin, generic.DetailView):
     """Vista del historial de ventas registradas para un cliente específico"""
     model = Cliente
     template_name = "historialCliente.html"
@@ -69,7 +70,7 @@ class HistorialVentaClienteListView(generic.DetailView):
 
         return context
 
-class EmpleadoListView(generic.ListView):
+class EmpleadoListView(LoginRequiredMixin, generic.ListView):
     """Vista de catálogo de empleados"""
     model=Empleado
     template_name="empleados.html"
@@ -84,12 +85,12 @@ class EmpleadoListView(generic.ListView):
         return context
 
 
-class ProveedorListView(generic.ListView):
+class ProveedorListView(LoginRequiredMixin, generic.ListView):
     """Vista de catálogo de proveedores"""
     model=Proveedor
     template_name="proveedores.html"
 
-class InventarioListView(generic.ListView):
+class InventarioListView(LoginRequiredMixin, generic.ListView):
     """Vista general para consultar productos con su inventario total disponible."""
     model = Ropa
     template_name = 'inventario_lista.html'
@@ -104,6 +105,7 @@ class InventarioListView(generic.ListView):
         )
 
 
+@login_required
 def actualizar_inventario_view(request, ropa_id):
     """Formulario para consultar y actualizar el inventario existente de un producto por color."""
     ropa = get_object_or_404(
@@ -134,7 +136,7 @@ def actualizar_inventario_view(request, ropa_id):
     })
 
 
-class VentaListView(generic.ListView):
+class VentaListView(LoginRequiredMixin, generic.ListView):
     """Lista de ventas registradas."""
     model = Venta
     template_name = 'ventas.html'
@@ -149,7 +151,7 @@ class VentaListView(generic.ListView):
         )
 
 
-class VentaDetailView(generic.DetailView):
+class VentaDetailView(LoginRequiredMixin, generic.DetailView):
     """Detalle de una venta con sus articulos."""
     model = Venta
     template_name = 'venta_detalle.html'
@@ -162,6 +164,7 @@ class VentaDetailView(generic.DetailView):
         )
 
 
+@login_required
 def registrar_venta_view(request):
     """Registrar venta y descontar existencias."""
     # cliente default

@@ -14,7 +14,7 @@
 <!-- Menú de Módulos del Sistema -->
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
 
-    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Ropa -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -38,7 +38,7 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Cajero" or user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Cajero" %}
     <!-- Módulo Ventas -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -62,7 +62,7 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Almacenista" or user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Almacenista" %}
     <!-- Módulo Inventario -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -86,7 +86,7 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Clientes -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -110,7 +110,7 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Proveedores -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
@@ -134,7 +134,7 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    {% if user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Empleados -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">
