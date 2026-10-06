@@ -83,15 +83,24 @@
                             <i class="bi bi-house-door me-1"></i>Inicio
                         </a>
                     </li>
-                    {% if user|pertenece_grupo:"Administrador" %}
+                    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'ropa' %}">
                                 <i class="bi bi-tags me-1"></i>Ropa
                             </a>
                         </li>
+                    {% endif %}
+                    {% if user|pertenece_grupo:"Administrador" or user|pertenece_grupo:"Almacenista" or user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'inventario_lista' %}">
                                 <i class="bi bi-boxes me-1"></i>Inventario
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|pertenece_grupo:"Administrador" or user|pertenece_grupo:"Cajero" or user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ventas' %}">
+                                <i class="bi bi-cart-check me-1"></i>Ventas
                             </a>
                         </li>
                     {% endif %}
@@ -101,36 +110,34 @@
                             <i class="bi bi-grid me-1"></i>Catálogos
                         </a>
                         <ul class="dropdown-menu shadow-sm">
-                            {% if user|pertenece_grupo:"Administrador" %}
+                            {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'ropa' %}"><i class="bi bi-tags me-2 text-primary"></i>Ropa</a></li>
+                                <li><a class="dropdown-item" href="{% url 'inventario_lista' %}"><i class="bi bi-boxes me-2 text-info"></i>Inventario</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-layers me-2 text-secondary"></i>Modelos</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-truck me-2 text-secondary"></i>Proveedores</a></li>
-                                <li><a class="dropdown-item" href="{% url 'clientes'%}"><i class="bi bi-people me-2 text-secondary"></i>Clientes</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person-badge me-2 text-secondary"></i>Empleados</a></li>
+                                <li><a class="dropdown-item" href="{% url 'proveedores' %}"><i class="bi bi-truck me-2 text-secondary"></i>Proveedores</a></li>
+                                <li><a class="dropdown-item" href="{% url 'clientes' %}"><i class="bi bi-people me-2 text-secondary"></i>Clientes</a></li>
+                                <li><a class="dropdown-item" href="{% url 'empleados' %}"><i class="bi bi-person-badge me-2 text-secondary"></i>Empleados</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ventas' %}"><i class="bi bi-cart-check me-2 text-secondary"></i>Ventas</a></li>
                             {% endif %}
-                            {% if user|pertenece_grupo:"Almacenista" %}
+                            {% if user|pertenece_grupo:"Almacenista" and not user|pertenece_grupo:"Administrador" and not user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'inventario_lista' %}"><i class="bi bi-boxes me-2 text-info"></i>Inventario</a></li>
                             {% endif %}
-                            
-                            {% if user|pertenece_grupo:"Cajero" %}
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart-check me-2 text-secondary"></i>Ventas</a></li>
+                            {% if user|pertenece_grupo:"Cajero" and not user|pertenece_grupo:"Administrador" and not user.is_superuser %}
+                                <li><a class="dropdown-item" href="{% url 'ventas' %}"><i class="bi bi-cart-check me-2 text-secondary"></i>Ventas</a></li>
                             {% endif %}
                         </ul>
                     </li>
                 </ul>
                 
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
                     <li class="nav-item"> 
-                        <form method="post" action="{% url 'logout' %}"> 
+                        <form method="post" action="{% url 'logout' %}" class="d-inline"> 
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm"> 
-                                <i class="bi bi-shield-lock me-1"></i> Cerrar Sesión </button> 
+                                <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión </button> 
                         </form> 
-                    </li> 
-                </ul>
-                {% endif %}
-
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-light btn-sm" href="/admin/" target="_blank">
                             <i class="bi bi-shield-lock me-1"></i>Panel Admin
@@ -138,6 +145,17 @@
                     </li>
                 </ul>
             </div>
+            {% else %}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </nav>
 
