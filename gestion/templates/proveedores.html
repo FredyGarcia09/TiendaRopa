@@ -1,7 +1,7 @@
 {% extends "pagina_maestra.html" %}
 {% load permisos %}
 
-{% block title %}Catálogo de Clientes - Tienda de Ropa{% endblock %}
+{% block title %}Catálogo de Proveedores - Tienda de Ropa{% endblock %}
 
 {% block estilos %}
 <!-- DataTables Bootstrap 5 CSS -->
@@ -61,28 +61,28 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 60px;"><i class="bi bi-hash"></i> ID</th>
-                        <th><i class="bi bi-person-vcard me-1"></i> Nombre</th>
-                        <th><i class="bi bi-person-vcard me-1"></i> Dirección</th>
-                        <th class="text-start"><i class="bi bi-bag-fill me-1"></i> Telefono</th>
-                         <th class="text-center" style="width: 160px;"><i class="bi bi-gear me-1"></i> Lista de Productos</th>
+                        <th><i class="bi bi-building me-1"></i> Nombre / Marca</th>
+                        <th><i class="bi bi-geo-alt me-1"></i> Dirección</th>
+                        <th class="text-start"><i class="bi bi-telephone me-1"></i> Teléfono</th>
+                         <th class="text-center" style="width: 170px;"><i class="bi bi-boxes me-1"></i> Lista de Productos</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for proveedor in proveedor_list %}
                     <tr>
                         <td class="text-center text-muted fw-bold">{{ proveedor.id }}</td>
-                        <td>{{ proveedor.nombre }}</td>
+                        <td><strong>{{ proveedor.nombre }}</strong></td>
                         <td>{{ proveedor.direccion }}</td>
                         <td class="text-center">{{ proveedor.telefono }}</td>
                         <td class="text-center">
-                            <a href="{% url 'historialCliente' proveedor.id %}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-card-checklist me-1"></i>Ver
+                            <a href="{% url 'proveedor_productos' proveedor.id %}" class="btn btn-outline-primary btn-sm" title="Ver prendas suministradas por este proveedor">
+                                <i class="bi bi-boxes me-1"></i>Ver productos
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">No hay empledos registrados</td>
+                        <td colspan="5" class="text-center py-4 text-muted">No hay proveedores registrados</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -112,16 +112,16 @@
             pageLength: 10,
             language: {
                 decimal: "",
-                emptyTable: "No hay empleados registrados en la tabla",
-                info: "Mostrando _START_ a _END_ de _TOTAL_ clientes",
-                infoEmpty: "Mostrando 0 a 0 de 0 empleados",
-                infoFiltered: "(filtrado de _MAX_ empleados totales)",
+                emptyTable: "No hay proveedores registrados en la tabla",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
+                infoEmpty: "Mostrando 0 a 0 de 0 proveedores",
+                infoFiltered: "(filtrado de _MAX_ proveedores totales)",
                 lengthMenu: "Mostrar _MENU_ registros por página",
                 loadingRecords: "Cargando datos...",
                 processing: "Procesando...",
-                search: "Buscar empleado:",
-                searchPlaceholder: "nombre, apellidos, puesto...",
-                zeroRecords: "No se encontraron empleados coincidentes",
+                search: "Buscar proveedor:",
+                searchPlaceholder: "nombre, dirección, teléfono...",
+                zeroRecords: "No se encontraron proveedores coincidentes",
                 paginate: {
                     first: "Primero",
                     last: "Último",
@@ -136,8 +136,8 @@
                             extend: 'excelHtml5',
                             text: '<i class="bi bi-file-earmark-excel-fill text-white me-1"></i> Exportar a Excel',
                             className: 'btn btn-success shadow-sm',
-                            title: 'Catalogo_Empleado',
-                            filename: 'Catalogo_Empleado_' + new Date().toISOString().slice(0, 10)
+                            title: 'Catalogo_Proveedores',
+                            filename: 'Catalogo_Proveedores_' + new Date().toISOString().slice(0, 10)
                         }
                     ]
                 }

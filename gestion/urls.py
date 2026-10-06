@@ -34,6 +34,7 @@ urlpatterns = [
     path('clientes/<int:pk>/eliminar/', views.cliente_eliminar_view, name='cliente_eliminar'),
     path('empleados/nuevo/', views.EmpleadoCreateView.as_view(), name='empleado_crear'),
     path('proveedores/nuevo/', views.ProveedorCreateView.as_view(), name='proveedor_crear'),
+    path('proveedores/<int:pk>/productos/', views.ProveedorProductosListView.as_view(), name='proveedor_productos'),
     path('colores/', views.ColoresListView.as_view(), name='colores'),
     path('colores/nuevo/', views.ModeloCreateView.as_view(), name='color_crear'),
     path('ventas/', views.VentaListView.as_view(), name='ventas'),

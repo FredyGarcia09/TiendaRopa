@@ -189,6 +189,24 @@ class ProveedorCreateView(RolRequeridoMixin, generic.CreateView):
         return super().form_valid(form)
 
 
+class ProveedorProductosListView(RolRequeridoMixin, generic.DetailView):
+    """Lista de productos suministrados por un proveedor."""
+    roles_permitidos = ['Administrador']
+    model = Proveedor
+    template_name = "proveedor_productos.html"
+    context_object_name = "proveedor"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        proveedor = self.object
+        context['productos'] = (
+            proveedor.ropa_set.prefetch_related('modelo_set')
+            .all()
+            .order_by('marca', 'descripcion')
+        )
+        return context
+
+
 class ColoresListView(RolRequeridoMixin, generic.ListView):
     """Catálogo de colores y modelos registrados."""
     roles_permitidos = ['Administrador']
