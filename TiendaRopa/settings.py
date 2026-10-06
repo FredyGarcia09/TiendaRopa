@@ -73,12 +73,14 @@ WSGI_APPLICATION = 'TiendaRopa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tienda',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': os.getenv('DB_PASSWORD', 'root'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -130,3 +132,8 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# Configuración de autenticación
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

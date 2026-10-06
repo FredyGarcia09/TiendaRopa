@@ -14,14 +14,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('home/', views.HomeView.as_view(), name='home_alt'),
     path('ropa/', views.RopaListView.as_view(), name='ropa'),
+    path('clientes/', views.ClienteListView.as_view(), name='clientes'),
+    path('clientes/<int:pk>/',views.HistorialVentaClienteListView.as_view(),name="historialCliente"),
     path('inventario/', views.InventarioListView.as_view(), name='inventario_lista'),
+    path('empleados/', views.EmpleadoListView.as_view(), name='empleados'),
+    path('proveedores/', views.ProveedorListView.as_view(), name='proveedores'),
     path('inventario/<int:ropa_id>/', views.actualizar_inventario_view, name='actualizar_inventario'),
+    path('accounts/login/', views.MiLoginView.as_view(), name='login'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('ropa/nueva/', views.RopaCreateView.as_view(), name='ropa_crear'),
+    path('clientes/nuevo/', views.ClienteCreateView.as_view(), name='cliente_crear'),
+    path('clientes/<int:pk>/eliminar/', views.cliente_eliminar_view, name='cliente_eliminar'),
+    path('empleados/nuevo/', views.EmpleadoCreateView.as_view(), name='empleado_crear'),
+    path('proveedores/nuevo/', views.ProveedorCreateView.as_view(), name='proveedor_crear'),
+    path('proveedores/<int:pk>/productos/', views.ProveedorProductosListView.as_view(), name='proveedor_productos'),
+    path('colores/', views.ColoresListView.as_view(), name='colores'),
+    path('colores/nuevo/', views.ModeloCreateView.as_view(), name='color_crear'),
+    path('ventas/', views.VentaListView.as_view(), name='ventas'),
+    path('ventas/nueva/', views.registrar_venta_view, name='registrar_venta'),
+    path('ventas/<int:pk>/', views.VentaDetailView.as_view(), name='venta_detalle'),
 ]
 

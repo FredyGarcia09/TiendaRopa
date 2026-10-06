@@ -1,0 +1,77 @@
+{% extends "pagina_maestra.html" %}
+
+{% block title %}Registrar Proveedor - Tienda de Ropa{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'proveedores' %}" class="btn btn-outline-secondary btn-sm mb-2">
+        <i class="bi bi-arrow-left me-1"></i>Volver al Catálogo de Proveedores
+    </a>
+    <h3 class="fw-bold mb-0 text-dark">
+        <i class="bi bi-truck text-primary me-2"></i>Registrar Nuevo Proveedor
+    </h3>
+    <p class="text-muted small mb-0">Captura la información de contacto y ubicación de la empresa proveedora.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="card shadow-sm border-0 mb-5" style="border-radius: 0.75rem; border: 1px solid #e2e8f0;">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-semibold text-secondary">
+                    <i class="bi bi-pencil-square me-2"></i>Datos del Proveedor
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.nombre.id_for_label }}" class="form-label fw-semibold">
+                            Nombre del Proveedor / Empresa <span class="text-danger">*</span>
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <div class="text-danger small mt-1">{{ form.nombre.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.direccion.id_for_label }}" class="form-label fw-semibold">
+                            Dirección <span class="text-danger">*</span>
+                        </label>
+                        {{ form.direccion }}
+                        {% if form.direccion.errors %}
+                            <div class="text-danger small mt-1">{{ form.direccion.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.telefono.id_for_label }}" class="form-label fw-semibold">
+                            Teléfono <span class="text-danger">*</span>
+                        </label>
+                        {{ form.telefono }}
+                        {% if form.telefono.errors %}
+                            <div class="text-danger small mt-1">{{ form.telefono.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'proveedores' %}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-check-circle me-1"></i>Guardar Proveedor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
