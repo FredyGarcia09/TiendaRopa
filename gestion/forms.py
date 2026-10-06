@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ropa, Cliente, Proveedor, Modelo
+from .models import Ropa, Cliente, Proveedor, Modelo, Empleado
 
 
 class RopaForm(forms.ModelForm):
@@ -117,3 +117,38 @@ class ModeloForm(forms.ModelForm):
                 'required': True,
             }),
         }
+
+
+class EmpleadoForm(forms.ModelForm):
+    class Meta:
+        model = Empleado
+        fields = ['nombre', 'apellidos', 'puesto', 'telefono']
+        labels = {
+            'nombre': 'Nombre(s)',
+            'apellidos': 'Apellidos',
+            'puesto': 'Puesto',
+            'telefono': 'Teléfono de Contacto',
+        }
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nombre(s) del empleado',
+                'required': True,
+            }),
+            'apellidos': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Apellidos del empleado',
+                'required': True,
+            }),
+            'puesto': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ejemplo: Cajero, Vendedor, Supervisor',
+                'required': True,
+            }),
+            'telefono': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Teléfono a 10 dígitos',
+                'required': True,
+            }),
+        }
+

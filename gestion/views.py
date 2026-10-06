@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db import transaction
 from .models import Ropa, Modelo, Cliente, Empleado, Proveedor, Venta, DetalleVenta
-from .forms import RopaForm, ClienteForm, ProveedorForm, ModeloForm
+from .forms import RopaForm, ClienteForm, ProveedorForm, ModeloForm, EmpleadoForm
 
 
 class RolRequeridoMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -105,6 +105,28 @@ class ClienteCreateView(RolRequeridoMixin, generic.CreateView):
         return super().form_valid(form)
 
 
+@login_required
+def cliente_eliminar_view(request, pk):
+    """Eliminar cliente si no tiene historial de compras."""
+    if not request.user.is_superuser and not request.user.groups.filter(name='Administrador').exists():
+        messages.error(request, "No tienes permisos para eliminar clientes.")
+        return redirect('clientes')
+
+    cliente = get_object_or_404(Cliente, pk=pk)
+
+    if cliente.venta_set.exists():
+        messages.error(request, f'No se puede eliminar al cliente "{cliente}" porque cuenta con un historial de compras.')
+        return redirect('clientes')
+
+    if request.method == 'POST':
+        nombre_cliente = str(cliente)
+        cliente.delete()
+        messages.success(request, f'Cliente "{nombre_cliente}" eliminado con éxito.')
+        return redirect('clientes')
+
+    return render(request, 'cliente_confirm_delete.html', {'cliente': cliente})
+
+
 class HistorialVentaClienteListView(RolRequeridoMixin, generic.DetailView):
     """Historial de compras de un cliente."""
     roles_permitidos = ['Administrador']
@@ -132,6 +154,19 @@ class EmpleadoListView(RolRequeridoMixin, generic.ListView):
             resultado = empleado.venta_set.aggregate(totalVentas=Sum('total'))
             empleado.ventasTotal = resultado['totalVentas'] or 0
         return context
+
+
+class EmpleadoCreateView(RolRequeridoMixin, generic.CreateView):
+    """Registrar nuevo empleado."""
+    roles_permitidos = ['Administrador']
+    model = Empleado
+    form_class = EmpleadoForm
+    template_name = 'empleado_form.html'
+    success_url = reverse_lazy('empleados')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Empleado registrado con éxito.")
+        return super().form_valid(form)
 
 
 class ProveedorListView(RolRequeridoMixin, generic.ListView):
