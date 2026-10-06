@@ -1,4 +1,5 @@
 {% extends "pagina_maestra.html" %}
+{% load permisos %}
 
 {% block title %}Catálogo de Clientes - Tienda de Ropa{% endblock %}
 
@@ -32,10 +33,17 @@
             <i class="bi bi-arrow-left me-1"></i>Volver al Menú
         </a>
         <h3 class="fw-bold mb-0 text-dark">
-            <i class="bi bi-tags text-primary me-2"></i>Catálogo de Proveedores
+            <i class="bi bi-truck text-primary me-2"></i>Catálogo de Proveedores
         </h3>
         <p class="text-muted small mb-0">Catálogo de proveedores de marcas de ropa.</p>
     </div>
+    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    <div>
+        <a href="{% url 'proveedor_crear' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i>Registrar Proveedor
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <div class="card shadow-sm table-container mb-5">

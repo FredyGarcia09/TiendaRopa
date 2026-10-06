@@ -38,7 +38,31 @@
     </div>
     {% endif %}
 
-    {% if user|pertenece_grupo:"Cajero" %}
+    {% if user|pertenece_grupo:"Administrador" %}
+    <!-- Módulo Colores -->
+    <div class="col">
+        <div class="card h-100 shadow-sm card-module text-center bg-white">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="icon-shape bg-info-subtle text-info mx-auto">
+                        <i class="bi bi-palette"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">Colores</h5>
+                    <p class="card-text text-muted small">
+                        Catálogo de variantes de color, tallas, precios y existencias.
+                    </p>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'colores' %}" class="btn btn-primary w-100 fw-semibold">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user|pertenece_grupo:"Cajero" or user|pertenece_grupo:"Administrador" %}
     <!-- Módulo Ventas -->
     <div class="col">
         <div class="card h-100 shadow-sm card-module text-center bg-white">

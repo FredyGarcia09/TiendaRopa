@@ -2,12 +2,33 @@ from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import generic
+from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db import transaction
 from .models import Ropa, Modelo, Cliente, Empleado, Proveedor, Venta, DetalleVenta
+from .forms import RopaForm, ClienteForm, ProveedorForm, ModeloForm
+
+
+class RolRequeridoMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Control de acceso por grupos de usuario."""
+    roles_permitidos = []
+
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
+        if user.is_superuser:
+            return True
+        return user.groups.filter(name__in=self.roles_permitidos).exists()
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('login')
+        messages.error(self.request, "No tienes permisos para acceder a esta sección.")
+        return redirect('home')
 
 
 class MiLoginView(LoginView):
@@ -19,13 +40,15 @@ class MiLoginView(LoginView):
 
         return super().dispatch(request, *args, **kwargs)
 
+
 class HomeView(LoginRequiredMixin, generic.TemplateView):
     """Vista del menú inicial del sistema."""
     template_name = 'home.html'
 
 
-class RopaListView(LoginRequiredMixin, generic.ListView):
-    """Vista de catálogo de ropa con DataTables y exportación a Excel."""
+class RopaListView(RolRequeridoMixin, generic.ListView):
+    """Catálogo general de prendas."""
+    roles_permitidos = ['Administrador']
     model = Ropa
     template_name = 'ropa.html'
     context_object_name = 'ropas'
@@ -39,59 +62,129 @@ class RopaListView(LoginRequiredMixin, generic.ListView):
         )
 
 
-class ClienteListView(LoginRequiredMixin, generic.ListView):
-    """Vista de cátalogo de clientes con DataTables"""
-    model=Cliente
-    template_name="clientes.html"
+class RopaCreateView(RolRequeridoMixin, generic.CreateView):
+    """Registrar nueva prenda."""
+    roles_permitidos = ['Administrador']
+    model = Ropa
+    form_class = RopaForm
+    template_name = 'ropa_form.html'
+    success_url = reverse_lazy('ropa')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Prenda registrada con éxito.")
+        return super().form_valid(form)
+
+
+class ClienteListView(RolRequeridoMixin, generic.ListView):
+    """Catálogo de clientes con total de compras."""
+    roles_permitidos = ['Administrador']
+    model = Cliente
+    template_name = "clientes.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         for cliente in context['cliente_list']:
             cliente.ventas = cliente.venta_set.count()
-            resultado=cliente.venta_set.aggregate(totalVentas=Sum('total'))
-            cliente.ventasTotal=resultado['totalVentas'] or 0
+            resultado = cliente.venta_set.aggregate(totalVentas=Sum('total'))
+            cliente.ventasTotal = resultado['totalVentas'] or 0
 
         return context
 
-class HistorialVentaClienteListView(LoginRequiredMixin, generic.DetailView):
-    """Vista del historial de ventas registradas para un cliente específico"""
+
+class ClienteCreateView(RolRequeridoMixin, generic.CreateView):
+    """Registrar nuevo cliente."""
+    roles_permitidos = ['Administrador']
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'cliente_form.html'
+    success_url = reverse_lazy('clientes')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Cliente registrado con éxito.")
+        return super().form_valid(form)
+
+
+class HistorialVentaClienteListView(RolRequeridoMixin, generic.DetailView):
+    """Historial de compras de un cliente."""
+    roles_permitidos = ['Administrador']
     model = Cliente
     template_name = "historialCliente.html"
     context_object_name = "cliente"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         cliente = self.object
-
         cliente.ventas = cliente.venta_set.count()
         cliente.listaVentas = cliente.venta_set.all().order_by('-fecha')
-
         return context
 
-class EmpleadoListView(LoginRequiredMixin, generic.ListView):
-    """Vista de catálogo de empleados"""
-    model=Empleado
-    template_name="empleados.html"
+
+class EmpleadoListView(RolRequeridoMixin, generic.ListView):
+    """Catálogo de empleados."""
+    roles_permitidos = ['Administrador']
+    model = Empleado
+    template_name = "empleados.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         for empleado in context['empleado_list']:
-            resultado=empleado.venta_set.aggregate(totalVentas=Sum('total'))
-            empleado.ventasTotal=resultado['totalVentas'] or 0
-
+            resultado = empleado.venta_set.aggregate(totalVentas=Sum('total'))
+            empleado.ventasTotal = resultado['totalVentas'] or 0
         return context
 
 
-class ProveedorListView(LoginRequiredMixin, generic.ListView):
-    """Vista de catálogo de proveedores"""
-    model=Proveedor
-    template_name="proveedores.html"
+class ProveedorListView(RolRequeridoMixin, generic.ListView):
+    """Catálogo de proveedores."""
+    roles_permitidos = ['Administrador']
+    model = Proveedor
+    template_name = "proveedores.html"
 
-class InventarioListView(LoginRequiredMixin, generic.ListView):
-    """Vista general para consultar productos con su inventario total disponible."""
+
+class ProveedorCreateView(RolRequeridoMixin, generic.CreateView):
+    """Registrar nuevo proveedor."""
+    roles_permitidos = ['Administrador']
+    model = Proveedor
+    form_class = ProveedorForm
+    template_name = 'proveedor_form.html'
+    success_url = reverse_lazy('proveedores')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Proveedor registrado con éxito.")
+        return super().form_valid(form)
+
+
+class ColoresListView(RolRequeridoMixin, generic.ListView):
+    """Catálogo de colores y modelos registrados."""
+    roles_permitidos = ['Administrador']
+    model = Modelo
+    template_name = "colores.html"
+    context_object_name = "modelos"
+
+    def get_queryset(self):
+        return (
+            Modelo.objects.select_related('ropa')
+            .all()
+            .order_by('ropa__marca', 'color', 'talla')
+        )
+
+
+class ModeloCreateView(RolRequeridoMixin, generic.CreateView):
+    """Registrar nuevo color o variante de modelo."""
+    roles_permitidos = ['Administrador']
+    model = Modelo
+    form_class = ModeloForm
+    template_name = 'color_form.html'
+    success_url = reverse_lazy('colores')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Color y modelo registrado con éxito.")
+        return super().form_valid(form)
+
+
+class InventarioListView(RolRequeridoMixin, generic.ListView):
+    """Consulta de inventario disponible por producto."""
+    roles_permitidos = ['Almacenista']
     model = Ropa
     template_name = 'inventario_lista.html'
     context_object_name = 'ropas'
@@ -107,7 +200,10 @@ class InventarioListView(LoginRequiredMixin, generic.ListView):
 
 @login_required
 def actualizar_inventario_view(request, ropa_id):
-    """Formulario para consultar y actualizar el inventario existente de un producto por color."""
+    """Actualizar existencias de inventario por color."""
+    if not request.user.is_superuser and not request.user.groups.filter(name='Almacenista').exists():
+        messages.error(request, "Solo el personal de almacén puede actualizar el inventario.")
+        return redirect('home')
     ropa = get_object_or_404(
         Ropa.objects.select_related('proveedor').prefetch_related('modelo_set'),
         pk=ropa_id
@@ -136,8 +232,9 @@ def actualizar_inventario_view(request, ropa_id):
     })
 
 
-class VentaListView(LoginRequiredMixin, generic.ListView):
+class VentaListView(RolRequeridoMixin, generic.ListView):
     """Lista de ventas registradas."""
+    roles_permitidos = ['Cajero', 'Administrador']
     model = Venta
     template_name = 'ventas.html'
     context_object_name = 'ventas'
@@ -151,8 +248,9 @@ class VentaListView(LoginRequiredMixin, generic.ListView):
         )
 
 
-class VentaDetailView(LoginRequiredMixin, generic.DetailView):
+class VentaDetailView(RolRequeridoMixin, generic.DetailView):
     """Detalle de una venta con sus articulos."""
+    roles_permitidos = ['Cajero', 'Administrador']
     model = Venta
     template_name = 'venta_detalle.html'
     context_object_name = 'venta'
@@ -167,6 +265,10 @@ class VentaDetailView(LoginRequiredMixin, generic.DetailView):
 @login_required
 def registrar_venta_view(request):
     """Registrar venta y descontar existencias."""
+    if not request.user.is_superuser and not request.user.groups.filter(name='Cajero').exists():
+        messages.error(request, "Solo el personal de caja puede registrar ventas.")
+        return redirect('ventas')
+
     # cliente default
     cliente_default = Cliente.objects.filter(nombre__iexact="Público general").first()
     if not cliente_default:

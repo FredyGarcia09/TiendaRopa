@@ -1,4 +1,5 @@
 {% extends "pagina_maestra.html" %}
+{% load permisos %}
 
 {% block title %}Catálogo de Clientes - Tienda de Ropa{% endblock %}
 
@@ -32,10 +33,17 @@
             <i class="bi bi-arrow-left me-1"></i>Volver al Menú
         </a>
         <h3 class="fw-bold mb-0 text-dark">
-            <i class="bi bi-tags text-primary me-2"></i>Catálogo de Clientes
+            <i class="bi bi-people text-primary me-2"></i>Catálogo de Clientes
         </h3>
         <p class="text-muted small mb-0">Directorio de clientes y consulta de historial.</p>
     </div>
+    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    <div>
+        <a href="{% url 'cliente_crear' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus me-1"></i>Registrar Cliente
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <div class="card shadow-sm table-container mb-5">

@@ -1,0 +1,101 @@
+{% extends "pagina_maestra.html" %}
+
+{% block title %}Registrar Color y Modelo - Tienda de Ropa{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'colores' %}" class="btn btn-outline-secondary btn-sm mb-2">
+        <i class="bi bi-arrow-left me-1"></i>Volver al Catálogo de Colores
+    </a>
+    <h3 class="fw-bold mb-0 text-dark">
+        <i class="bi bi-palette text-primary me-2"></i>Registrar Color y Modelo
+    </h3>
+    <p class="text-muted small mb-0">Asocia un color, talla, precio y existencia inicial a una prenda del catálogo.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="card shadow-sm border-0 mb-5" style="border-radius: 0.75rem; border: 1px solid #e2e8f0;">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-semibold text-secondary">
+                    <i class="bi bi-pencil-square me-2"></i>Datos de la Variante
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.ropa.id_for_label }}" class="form-label fw-semibold">
+                            Prenda <span class="text-danger">*</span>
+                        </label>
+                        {{ form.ropa }}
+                        {% if form.ropa.errors %}
+                            <div class="text-danger small mt-1">{{ form.ropa.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.color.id_for_label }}" class="form-label fw-semibold">
+                                Color <span class="text-danger">*</span>
+                            </label>
+                            {{ form.color }}
+                            {% if form.color.errors %}
+                                <div class="text-danger small mt-1">{{ form.color.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.talla.id_for_label }}" class="form-label fw-semibold">
+                                Talla <span class="text-danger">*</span>
+                            </label>
+                            {{ form.talla }}
+                            {% if form.talla.errors %}
+                                <div class="text-danger small mt-1">{{ form.talla.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.precio.id_for_label }}" class="form-label fw-semibold">
+                                Precio Unitario ($) <span class="text-danger">*</span>
+                            </label>
+                            {{ form.precio }}
+                            {% if form.precio.errors %}
+                                <div class="text-danger small mt-1">{{ form.precio.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.stock.id_for_label }}" class="form-label fw-semibold">
+                                Stock Inicial <span class="text-danger">*</span>
+                            </label>
+                            {{ form.stock }}
+                            {% if form.stock.errors %}
+                                <div class="text-danger small mt-1">{{ form.stock.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'colores' %}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-check-circle me-1"></i>Guardar Color / Modelo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

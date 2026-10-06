@@ -90,8 +90,37 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'colores' %}">
+                                <i class="bi bi-palette me-1"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'clientes' %}">
+                                <i class="bi bi-people me-1"></i>Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'proveedores' %}">
+                                <i class="bi bi-truck me-1"></i>Proveedores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ventas' %}">
+                                <i class="bi bi-cart-check me-1"></i>Ventas
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|pertenece_grupo:"Almacenista" %}
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'inventario_lista' %}">
                                 <i class="bi bi-boxes me-1"></i>Inventario
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if user|pertenece_grupo:"Cajero" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ventas' %}">
+                                <i class="bi bi-cart-check me-1"></i>Ventas
                             </a>
                         </li>
                     {% endif %}
@@ -103,10 +132,11 @@
                         <ul class="dropdown-menu shadow-sm">
                             {% if user|pertenece_grupo:"Administrador" %}
                                 <li><a class="dropdown-item" href="{% url 'ropa' %}"><i class="bi bi-tags me-2 text-primary"></i>Ropa</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-layers me-2 text-secondary"></i>Modelos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'colores' %}"><i class="bi bi-palette me-2 text-secondary"></i>Colores</a></li>
                                 <li><a class="dropdown-item" href="{% url 'proveedores' %}"><i class="bi bi-truck me-2 text-secondary"></i>Proveedores</a></li>
                                 <li><a class="dropdown-item" href="{% url 'clientes' %}"><i class="bi bi-people me-2 text-secondary"></i>Clientes</a></li>
                                 <li><a class="dropdown-item" href="{% url 'empleados' %}"><i class="bi bi-person-badge me-2 text-secondary"></i>Empleados</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ventas' %}"><i class="bi bi-cart-check me-2 text-secondary"></i>Ventas</a></li>
                             {% endif %}
                             {% if user|pertenece_grupo:"Almacenista" %}
                                 <li><a class="dropdown-item" href="{% url 'inventario_lista' %}"><i class="bi bi-boxes me-2 text-info"></i>Inventario</a></li>

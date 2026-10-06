@@ -1,4 +1,5 @@
 {% extends "pagina_maestra.html" %}
+{% load permisos %}
 
 {% block title %}Catálogo de Ropa - Tienda de Ropa{% endblock %}
 
@@ -36,6 +37,13 @@
         </h3>
         <p class="text-muted small mb-0">Inventario de prendas registradas y exportación de datos.</p>
     </div>
+    {% if user|pertenece_grupo:"Administrador" or user.is_superuser %}
+    <div>
+        <a href="{% url 'ropa_crear' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i>Registrar Prenda
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <div class="card shadow-sm table-container mb-5">
