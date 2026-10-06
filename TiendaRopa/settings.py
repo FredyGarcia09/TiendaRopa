@@ -73,12 +73,14 @@ WSGI_APPLICATION = 'TiendaRopa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tienda',
         'USER': 'postgres',
-        'PASSWORD': 'whythough210',
+        'PASSWORD': os.getenv('DB_PASSWORD', 'root'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
